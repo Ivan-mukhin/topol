@@ -3,7 +3,7 @@ import { WeaponSelector } from './components/WeaponSelector';
 import { LoadoutConfig } from './components/LoadoutConfig';
 import { DamageChart } from './components/DamageChart';
 import { calculateTTK, type TTKResult } from './utils/calculator';
-import type { ShieldType } from '../data/vectors';
+import type { ShieldType } from './data/vectors';
 
 function App() {
   const [selectedWeapon, setSelectedWeapon] = useState<string>('bobcat');
