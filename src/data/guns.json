@@ -1,0 +1,294 @@
+{
+    "GUNS": {
+        "bobcat": {
+            "damage": 6,
+            "fire_rate": 16.785,
+            "mag_size": 20,
+            "reload_time": 2.0
+        },
+        "torrente": {
+            "damage": 8,
+            "fire_rate": 13.42,
+            "mag_size": 60,
+            "reload_time": 2.0
+        },
+        "stitcher": {
+            "damage": 7,
+            "fire_rate": 11.448,
+            "mag_size": 20,
+            "reload_time": 2.0
+        },
+        "tempest": {
+            "damage": 10,
+            "fire_rate": 9.315,
+            "mag_size": 25,
+            "reload_time": 2.0
+        },
+        "kettle": {
+            "damage": 10,
+            "fire_rate": 7.415,
+            "mag_size": 20,
+            "reload_time": 3
+        },
+        "burletta": {
+            "damage": 10,
+            "fire_rate": 6.519,
+            "mag_size": 12,
+            "reload_time": 2.0
+        },
+        "bettina": {
+            "damage": 14,
+            "fire_rate": 4.8,
+            "mag_size": 20,
+            "reload_time": 2.0
+        },
+        "venator": {
+            "damage": 18,
+            "fire_rate": 3.169,
+            "mag_size": 10,
+            "reload_time": 1.78
+        },
+        "vulcano": {
+            "damage": 49.5,
+            "fire_rate": 1.899,
+            "mag_size": 6,
+            "reload_time": 2.0
+        },
+        "renegade": {
+            "damage": 35,
+            "fire_rate": 0.743,
+            "mag_size": 8,
+            "reload_time": 4.56
+        },
+        "toro": {
+            "damage": 67.5,
+            "fire_rate": 0.694,
+            "mag_size": 5,
+            "reload_time": 2.0
+        },
+        "anvil": {
+            "damage": 40,
+            "fire_rate": 0.65,
+            "mag_size": 6,
+            "reload_time": 2.0
+        },
+        "ferro": {
+            "damage": 40,
+            "fire_rate": 0.341,
+            "mag_size": 1,
+            "reload_time": 1.73
+        }
+    },
+    "SHIELDS": {
+        "light": {
+            "shield_damage_reduction": 0.4,
+            "shield_health": 40
+        },
+        "medium": {
+            "shield_damage_reduction": 0.425,
+            "shield_health": 70
+        },
+        "heavy": {
+            "shield_damage_reduction": 0.525,
+            "shield_health": 80
+        }
+    },
+    "HEADSHOT_MULTIPLIERS": {
+        "bobcat": 2.0,
+        "torrente": 2.0,
+        "stitcher": 2.5,
+        "tempest": 1.5,
+        "kettle": 2.5,
+        "burletta": 2.5,
+        "bettina": 2.0,
+        "venator": 2.5,
+        "vulcano": 1.0,
+        "renegade": 2.25,
+        "toro": 1.0,
+        "anvil": 2.5,
+        "ferro": 2.5
+    },
+    "GUN_UPGRADES": {
+        "kettle": {
+            "2": {
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "bobcat": {
+            "2": {
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "torrente": {
+            "2": {
+                "mag_size_bonus": 10,
+                "reload_reduction": 0.15,
+                "durability_bonus": 10
+            },
+            "3": {
+                "mag_size_bonus": 20,
+                "reload_reduction": 0.30,
+                "durability_bonus": 20
+            },
+            "4": {
+                "mag_size_bonus": 30,
+                "reload_reduction": 0.45,
+                "durability_bonus": 30
+            }
+        },
+        "stitcher": {
+            "2": {
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "tempest": {
+            "2": {
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "burletta": {
+            "2": {
+                "reload_reduction": 0.166,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.333,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.50,
+                "durability_bonus": 30
+            }
+        },
+        "venator": {
+            "2": {
+                "fire_rate_increase": 0.13,
+                "reload_reduction": 0.16,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.26,
+                "reload_reduction": 0.33,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.40,
+                "reload_reduction": 0.50,
+                "durability_bonus": 30
+            }
+        },
+        "vulcano": {
+            "2": {
+                "fire_rate_increase": 0.10,
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.20,
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.30,
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "renegade": {
+            "2": {
+                "fire_rate_increase": 0.25,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.50,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.75,
+                "durability_bonus": 30
+            }
+        },
+        "toro": {
+            "2": {
+                "fire_rate_increase": 0.175,
+                "mag_size_bonus": 1,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.35,
+                "mag_size_bonus": 2,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.50,
+                "mag_size_bonus": 3,
+                "durability_bonus": 30
+            }
+        },
+        "anvil": {
+            "2": {
+                "fire_rate_increase": 0.25,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.50,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.75,
+                "durability_bonus": 30
+            }
+        },
+        "ferro": {
+            "2": {
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "reload_reduction": 0.39,
+                "durability_bonus": 30
+            }
+        }
+    },
+    "BASE_HEALTH": 100
+}
