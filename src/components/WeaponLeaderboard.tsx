@@ -117,7 +117,7 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-orange-600 dark:text-orange-400">
                                     {row.bulletsFired}
-                                    {row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} reload)</span>}
+                                    {row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} {row.reloads === 1 ? 'reload' : 'reloads'})</span>}
                                 </td>
                             </tr>
                         ))}

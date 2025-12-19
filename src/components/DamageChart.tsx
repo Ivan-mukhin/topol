@@ -39,7 +39,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ result }) => {
                         {result.bulletsFired}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                        {result.reloads > 0 && `+${result.reloads} Reloads`}
+                        {result.reloads > 0 && `+${result.reloads} Reload${result.reloads === 1 ? '' : 's'}`}
                     </p>
                 </div>
             </div>
