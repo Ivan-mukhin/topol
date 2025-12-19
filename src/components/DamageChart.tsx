@@ -16,7 +16,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ result }) => {
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Performance Stats</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Performance Statistics</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">

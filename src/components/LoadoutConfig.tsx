@@ -75,7 +75,8 @@ export const LoadoutConfig: React.FC<LoadoutConfigProps> = ({
                             type="number"
                             min="0"
                             max="100"
-                            value={Math.round(headshotRatio * 100)}
+                            placeholder="0"
+                            value={Math.round(headshotRatio * 100) || ''}
                             onChange={(e) => {
                                 let val = parseInt(e.target.value) || 0;
                                 if (val < 0) val = 0;
