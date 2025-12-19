@@ -82,6 +82,7 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                             </th>
                             <th
                                 className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                                onClick={() => handleSort('ttk')}
                             >
                                 <div className="flex items-center justify-end">TTK <SortIcon columnKey="ttk" /></div>
                             </th>
@@ -93,6 +94,7 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                             </th>
                             <th
                                 className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                                onClick={() => handleSort('bulletsFired')}
                             >
                                 <div className="flex items-center justify-end">Shots to Kill <SortIcon columnKey="bulletsFired" /></div>
                             </th>
