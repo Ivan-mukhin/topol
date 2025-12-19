@@ -24,13 +24,28 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
     shieldType,
     headshotRatio,
 }) => {
+    if (!GUNS) {
+        return <div className="p-4 text-red-500">Error: Weapon data not loaded</div>;
+    }
+
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'ttk', direction: 'asc' });
+
+    const rarityColors = {
+        common: 'text-gray-500 dark:text-gray-400',
+        uncommon: 'text-emerald-500 dark:text-emerald-400',
+        rare: 'text-blue-500 dark:text-blue-400',
+        epic: 'text-purple-500 dark:text-purple-400',
+        legendary: 'text-orange-500 dark:text-orange-400',
+    };
 
     const leaderboardData = useMemo(() => {
         const data = Object.keys(GUNS).map((gunName) => {
             const result = calculateTTK(gunName, shieldType, level, headshotRatio);
+            const gunData = GUNS[gunName as keyof typeof GUNS];
             return {
                 name: gunName,
+                image: gunData.image,
+                rarity: gunData.rarity as keyof typeof rarityColors,
                 // If calculation fails (shouldn't happen for valid guns), provide fallbacks that push to bottom
                 ttk: result?.ttk ?? 999,
                 dps: result?.dps ?? 0,
@@ -107,7 +122,22 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                                     {index + 1}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
-                                    {row.name.replace(/_/g, ' ')}
+                                    <div className="flex items-center gap-3">
+                                        {/* Use error handling for images to not break layout if missing */}
+                                        <div className="w-16 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
+                                            <img
+                                                src={`/guns/${row.image}`}
+                                                alt={row.name}
+                                                className="w-full h-full object-contain"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                }}
+                                            />
+                                        </div>
+                                        <span className={rarityColors[row.rarity] || 'text-gray-900 dark:text-white'}>
+                                            {row.name.replace(/_/g, ' ')}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
                                     {row.ttk.toFixed(3)}s

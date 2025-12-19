@@ -21,7 +21,9 @@ export function calculateGunStatsByLevel() {
             fire_rate: baseStats.fire_rate,
             mag_size: baseStats.mag_size,
             reload_time: baseStats.reload_time,
-            durability: 100 // Base durability
+            durability: 100, // Base durability
+            rarity: baseStats.rarity as any,
+            image: baseStats.image
         };
 
         const upgrades = GUN_UPGRADES[gunName as keyof typeof GUN_UPGRADES];
@@ -64,7 +66,9 @@ export function calculateGunStatsByLevel() {
                         fire_rate: newFireRate,
                         mag_size: Math.floor(newMagSize),
                         reload_time: newReloadTime,
-                        durability: newDurability
+                        durability: newDurability,
+                        rarity: baseStats.rarity as any,
+                        image: baseStats.image
                     };
                 } else {
                     GUN_STATS_BY_LEVEL[gunName][level] = { ...GUN_STATS_BY_LEVEL[gunName][level - 1] };
@@ -80,7 +84,11 @@ export function calculateGunStatsByLevel() {
 }
 
 // Initialize on load
-calculateGunStatsByLevel();
+try {
+    calculateGunStatsByLevel();
+} catch (e) {
+    console.error("Failed to calculate gun stats:", e);
+}
 
 export function getGunStats(gunName: string, level: number = 1): GunStats | null {
     if (!GUN_STATS_BY_LEVEL[gunName]) return null;

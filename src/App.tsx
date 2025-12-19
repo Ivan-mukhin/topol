@@ -35,7 +35,7 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
 
           {/* Controls Column */}
-          <div className="md:col-span-5 bg-white dark:bg-gray-900 shadow rounded-lg p-6 space-y-6">
+          <div className="md:col-span-5 bg-white dark:bg-gray-900 shadow rounded-lg p-6 space-y-6 relative z-20">
             <WeaponSelector
               selectedWeapon={selectedWeapon}
               onSelectWeapon={setSelectedWeapon}

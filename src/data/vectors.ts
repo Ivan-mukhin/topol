@@ -3,6 +3,8 @@ export interface Gun {
     fire_rate: number;
     mag_size: number;
     reload_time: number;
+    rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+    image: string;
 }
 
 export interface Shield {

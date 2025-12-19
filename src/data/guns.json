@@ -4,79 +4,105 @@
             "damage": 6,
             "fire_rate": 16.785,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "epic",
+            "image": "bobcat.png"
         },
         "torrente": {
             "damage": 8,
             "fire_rate": 13.42,
             "mag_size": 60,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "rare",
+            "image": "torrente.png"
         },
         "stitcher": {
             "damage": 7,
             "fire_rate": 11.448,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "common",
+            "image": "stitcher.png"
         },
         "tempest": {
             "damage": 10,
             "fire_rate": 9.315,
             "mag_size": 25,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "epic",
+            "image": "tempest.png"
         },
         "kettle": {
             "damage": 10,
             "fire_rate": 7.415,
             "mag_size": 20,
-            "reload_time": 3
+            "reload_time": 3,
+            "rarity": "common",
+            "image": "kettle.png"
         },
         "burletta": {
             "damage": 10,
             "fire_rate": 6.519,
             "mag_size": 12,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "uncommon",
+            "image": "burletta.png"
         },
         "bettina": {
             "damage": 14,
             "fire_rate": 4.8,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "epic",
+            "image": "bettina.png"
         },
         "venator": {
             "damage": 18,
             "fire_rate": 3.169,
             "mag_size": 10,
-            "reload_time": 1.78
+            "reload_time": 1.78,
+            "rarity": "rare",
+            "image": "venator.png"
         },
         "vulcano": {
             "damage": 49.5,
             "fire_rate": 1.899,
             "mag_size": 6,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "epic",
+            "image": "vulcano.png"
         },
         "renegade": {
             "damage": 35,
             "fire_rate": 0.743,
             "mag_size": 8,
-            "reload_time": 4.56
+            "reload_time": 4.56,
+            "rarity": "rare",
+            "image": "renegade.png"
         },
         "toro": {
             "damage": 67.5,
             "fire_rate": 0.694,
             "mag_size": 5,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "uncommon",
+            "image": "toro.png"
         },
         "anvil": {
             "damage": 40,
             "fire_rate": 0.65,
             "mag_size": 6,
-            "reload_time": 2.0
+            "reload_time": 2.0,
+            "rarity": "uncommon",
+            "image": "anvil.png"
         },
         "ferro": {
             "damage": 40,
             "fire_rate": 0.341,
             "mag_size": 1,
-            "reload_time": 1.73
+            "reload_time": 1.73,
+            "rarity": "common",
+            "image": "ferro.png"
         }
     },
     "SHIELDS": {
