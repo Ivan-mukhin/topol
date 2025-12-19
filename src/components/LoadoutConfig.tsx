@@ -57,18 +57,41 @@ export const LoadoutConfig: React.FC<LoadoutConfigProps> = ({
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Headshot Ratio: {(headshotRatio * 100).toFixed(0)}%
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Headshot Chance
                 </label>
-                <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={headshotRatio}
-                    onChange={(e) => setHeadshotRatio(parseFloat(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                />
+                <div className="flex items-center gap-4">
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={headshotRatio}
+                        onChange={(e) => setHeadshotRatio(parseFloat(e.target.value))}
+                        className="flex-grow h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-indigo-600"
+                    />
+                    <div className="relative">
+                        <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={Math.round(headshotRatio * 100)}
+                            onChange={(e) => {
+                                let val = parseInt(e.target.value) || 0;
+                                if (val < 0) val = 0;
+                                if (val > 100) val = 100;
+                                setHeadshotRatio(val / 100);
+                            }}
+                            className="w-16 px-2 pr-6 py-1 text-right border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white no-spinner"
+                        />
+                        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs hidden">
+                            %
+                        </span>
+                        <span className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 text-xs sm:text-sm pointer-events-none pr-1">
+                            %
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     );
