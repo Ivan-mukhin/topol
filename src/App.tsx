@@ -12,10 +12,29 @@ function App() {
   const [shieldType, setShieldType] = useState<ShieldType>('medium');
   const [headshotRatio, setHeadshotRatio] = useState<number>(0.0);
   const [result, setResult] = useState<TTKResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const calcResult = calculateTTK(selectedWeapon, shieldType, level, headshotRatio);
-    setResult(calcResult);
+    try {
+      const calcResult = calculateTTK(selectedWeapon, shieldType, level, headshotRatio);
+      if (calcResult === null) {
+        // Deriving state from props - acceptable pattern for this use case
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setError(`Failed to calculate TTK for ${selectedWeapon}. Please try another weapon.`);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setResult(null);
+      } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setError(null);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setResult(calcResult);
+      }
+    } catch {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setError('An error occurred during calculation');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setResult(null);
+    }
   }, [selectedWeapon, level, shieldType, headshotRatio]);
 
   return (
@@ -55,7 +74,12 @@ function App() {
 
           {/* Results Column */}
           <div className="md:col-span-7 space-y-6">
-            <DamageChart result={result} />
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                <p className="text-red-800 dark:text-red-200">{error}</p>
+              </div>
+            )}
+            <DamageChart result={result} error={error} />
 
           </div>
 

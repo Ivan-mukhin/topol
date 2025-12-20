@@ -20,14 +20,6 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
         legendary: 'text-orange-500 dark:text-orange-400',
     };
 
-    const rarityWeights: Record<string, number> = {
-        legendary: 5,
-        epic: 4,
-        rare: 3,
-        uncommon: 2,
-        common: 1,
-    };
-
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -44,6 +36,13 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
 
     const sortedGuns = useMemo(() => {
         if (!GUNS) return [];
+        const rarityWeights: Record<string, number> = {
+            legendary: 5,
+            epic: 4,
+            rare: 3,
+            uncommon: 2,
+            common: 1,
+        };
         return Object.keys(GUNS).sort((a, b) => {
             const gunA = GUNS[a as keyof typeof GUNS];
             const gunB = GUNS[b as keyof typeof GUNS];
@@ -71,13 +70,16 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
                 <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-label={`Select weapon. Currently selected: ${selectedWeapon}`}
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
                     className="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 sm:text-sm"
                 >
                     <span className="flex items-center gap-3">
                         <div className="h-6 w-10 flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
                             <img
                                 src={`/guns/${selectedGunData.image}`}
-                                alt=""
+                                alt={`${selectedWeapon} weapon icon`}
                                 className="h-full w-full object-contain"
                                 onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
                             />
@@ -96,7 +98,11 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                    <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 sm:text-sm">
+                    <ul
+                        role="listbox"
+                        aria-label="Weapon selection"
+                        className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 sm:text-sm"
+                    >
                         {sortedGuns.map((gunName) => {
                             const gun = GUNS[gunName as keyof typeof GUNS];
                             const rarityColor = rarityColors[gun.rarity as keyof typeof rarityColors];
@@ -104,6 +110,8 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
                             return (
                                 <li
                                     key={gunName}
+                                    role="option"
+                                    aria-selected={selectedWeapon === gunName}
                                     className={`relative cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-gray-100 dark:hover:bg-gray-700 ${selectedWeapon === gunName ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''}`}
                                     onClick={() => {
                                         onSelectWeapon(gunName);
@@ -114,7 +122,7 @@ export const WeaponSelector: React.FC<WeaponSelectorProps> = ({ selectedWeapon, 
                                         <div className="h-6 w-10 flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900 rounded overflow-hidden">
                                             <img
                                                 src={`/guns/${gun.image}`}
-                                                alt=""
+                                                alt={`${gunName} weapon icon`}
                                                 className="h-full w-full object-contain"
                                                 onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
                                             />

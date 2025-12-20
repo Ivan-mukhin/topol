@@ -1,9 +1,13 @@
+// Rarity type with const assertion
+export const RARITY_VALUES = ['common', 'uncommon', 'rare', 'epic', 'legendary'] as const;
+export type Rarity = typeof RARITY_VALUES[number];
+
 export interface Gun {
     damage: number;
     fire_rate: number;
     mag_size: number;
     reload_time: number;
-    rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+    rarity: Rarity;
     image: string;
 }
 
@@ -23,4 +27,18 @@ export type ShieldType = 'light' | 'medium' | 'heavy';
 
 export interface GunStats extends Gun {
     durability: number;
+}
+
+// Damage log entry type
+export interface DamageLogEntry {
+    type: 'shot' | 'reload';
+    bullet?: number;
+    time: number;
+    shieldHealthBefore?: number;
+    shieldHealthAfter?: number;
+    healthBefore?: number;
+    healthAfter?: number;
+    shieldActive?: boolean;
+    bulletsRemaining?: number;
+    reloadNumber?: number;
 }

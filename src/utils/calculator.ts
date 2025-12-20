@@ -1,9 +1,19 @@
 import gunsData from '../data/guns.json';
-import type { GunStats, ShieldType } from '../data/vectors';
+import type { GunStats, ShieldType, Rarity, UpgradeLevel, DamageLogEntry } from '../data/vectors';
+import { logger } from './logger';
+import { ValidationError, CalculationError } from './errors';
+import {
+    BASE_DURABILITY,
+    MAX_ITERATIONS,
+    MIN_LEVEL,
+    MAX_LEVEL,
+    MIN_HEADSHOT_RATIO,
+    MAX_HEADSHOT_RATIO,
+    MIN_DAMAGE,
+    MIN_FIRE_RATE,
+} from '../data/constants';
 
 const { GUNS, SHIELDS, HEADSHOT_MULTIPLIERS, GUN_UPGRADES, BASE_HEALTH } = gunsData;
-
-
 
 // Map for memoizing gun stats by level
 const GUN_STATS_BY_LEVEL: Record<string, Record<number, GunStats>> = {};
@@ -21,20 +31,18 @@ export function calculateGunStatsByLevel() {
             fire_rate: baseStats.fire_rate,
             mag_size: baseStats.mag_size,
             reload_time: baseStats.reload_time,
-            durability: 100, // Base durability
-            rarity: baseStats.rarity as any,
+            durability: BASE_DURABILITY,
+            rarity: baseStats.rarity as Rarity,
             image: baseStats.image
         };
 
-        const upgrades = GUN_UPGRADES[gunName as keyof typeof GUN_UPGRADES];
+        const upgrades = GUN_UPGRADES[gunName as keyof typeof GUN_UPGRADES] as Record<string, UpgradeLevel> | undefined;
 
         if (upgrades) {
-            for (const level of [2, 3, 4]) {
+            for (const level of [2, 3, 4] as const) {
                 const strLevel = level.toString();
-                // @ts-ignore - JSON keys are strings
-                if (upgrades[strLevel]) {
-                    // @ts-ignore
-                    const upgrade = upgrades[strLevel];
+                const upgrade = upgrades[strLevel];
+                if (upgrade) {
                     const prevLevelStats = GUN_STATS_BY_LEVEL[gunName][level - 1];
 
                     // Fire rate increase
@@ -67,7 +75,7 @@ export function calculateGunStatsByLevel() {
                         mag_size: Math.floor(newMagSize),
                         reload_time: newReloadTime,
                         durability: newDurability,
-                        rarity: baseStats.rarity as any,
+                        rarity: baseStats.rarity as Rarity,
                         image: baseStats.image
                     };
                 } else {
@@ -76,7 +84,7 @@ export function calculateGunStatsByLevel() {
             }
         } else {
             // No upgrades, copy base stats
-            for (const level of [2, 3, 4]) {
+            for (const level of [2, 3, 4] as const) {
                 GUN_STATS_BY_LEVEL[gunName][level] = { ...GUN_STATS_BY_LEVEL[gunName][1] };
             }
         }
@@ -87,12 +95,12 @@ export function calculateGunStatsByLevel() {
 try {
     calculateGunStatsByLevel();
 } catch (e) {
-    console.error("Failed to calculate gun stats:", e);
+    logger.error("Failed to calculate gun stats:", e);
 }
 
 export function getGunStats(gunName: string, level: number = 1): GunStats | null {
     if (!GUN_STATS_BY_LEVEL[gunName]) return null;
-    if (level < 1 || level > 4) return null;
+    if (level < MIN_LEVEL || level > MAX_LEVEL) return null;
     return GUN_STATS_BY_LEVEL[gunName][level];
 }
 
@@ -100,12 +108,50 @@ export interface TTKResult {
     ttk: number;
     bulletsFired: number;
     reloads: number;
-    damageLog: any[];
+    damageLog: DamageLogEntry[];
     shieldType: ShieldType;
     gunName: string;
     level: number;
     headshotRatio: number;
     dps: number;
+}
+
+// Validation function - throws ValidationError for invalid inputs
+function validateInputs(
+    gunName: string,
+    shieldType: ShieldType,
+    level: number,
+    headshotRatio: number
+): void {
+    if (!GUNS[gunName as keyof typeof GUNS]) {
+        throw new ValidationError(`Invalid gun name: ${gunName}`, 'gunName');
+    }
+    if (!['light', 'medium', 'heavy'].includes(shieldType)) {
+        throw new ValidationError(`Invalid shield type: ${shieldType}`, 'shieldType');
+    }
+    if (level < MIN_LEVEL || level > MAX_LEVEL || !Number.isInteger(level)) {
+        throw new ValidationError(`Invalid level: ${level}. Must be an integer between ${MIN_LEVEL} and ${MAX_LEVEL}`, 'level');
+    }
+    // Only reject if not finite - clamped values are acceptable
+    if (!isFinite(headshotRatio)) {
+        throw new ValidationError(`Invalid headshot ratio: ${headshotRatio}. Must be a finite number`, 'headshotRatio');
+    }
+    
+    // Validate gun stats exist
+    const gunStats = getGunStats(gunName, level);
+    if (!gunStats) {
+        throw new ValidationError(`Gun stats not found for ${gunName} at level ${level}`, 'gunStats');
+    }
+    
+    // Validate weapon damage (critical for preventing infinite loops)
+    if (gunStats.damage < MIN_DAMAGE || !isFinite(gunStats.damage)) {
+        throw new ValidationError(`Invalid damage value for ${gunName}: ${gunStats.damage}`, 'damage');
+    }
+    
+    // Validate fire rate
+    if (gunStats.fire_rate < MIN_FIRE_RATE || !isFinite(gunStats.fire_rate)) {
+        throw new ValidationError(`Invalid fire rate for ${gunName}: ${gunStats.fire_rate}`, 'fireRate');
+    }
 }
 
 export function calculateTTK(
@@ -114,10 +160,33 @@ export function calculateTTK(
     level: number = 1,
     headshotRatio: number = 0.0
 ): TTKResult | null {
-    if (!GUNS[gunName as keyof typeof GUNS]) return null;
-
+    // Clamp headshotRatio first (defensive programming - allow out-of-range but clamp)
+    const clampedHeadshotRatio = Math.max(MIN_HEADSHOT_RATIO, Math.min(MAX_HEADSHOT_RATIO, headshotRatio));
+    
+    try {
+        // Validate inputs - throws ValidationError if invalid
+        // Use clamped value for validation, but check if original was out of range
+        if (headshotRatio !== clampedHeadshotRatio && isFinite(headshotRatio)) {
+            // Value was clamped but is finite, so allow it through
+            headshotRatio = clampedHeadshotRatio;
+        }
+        validateInputs(gunName, shieldType, level, headshotRatio);
+    } catch (error) {
+        // Catch validation errors and log them, then return null
+        if (error instanceof ValidationError) {
+            logger.warn(`Validation error: ${error.message}`, { field: error.field, gunName });
+            return null;
+        }
+        // Re-throw unexpected errors
+        throw error;
+    }
+    
+    // Use clamped value
+    headshotRatio = clampedHeadshotRatio;
+    
+    // Get gun stats (already validated above, but get again for use)
     const gunStats = getGunStats(gunName, level);
-    if (!gunStats) return null;
+    if (!gunStats) return null; // Should never happen after validation, but defensive
 
     const baseDamage = gunStats.damage;
     const headshotMultiplier = HEADSHOT_MULTIPLIERS[gunName as keyof typeof HEADSHOT_MULTIPLIERS] || 1.0;
@@ -137,11 +206,16 @@ export function calculateTTK(
     let bulletsFired = 0;
     let bulletsInCurrentMag = magSize;
     let reloads = 0;
-    const damageLog = [];
+    const damageLog: DamageLogEntry[] = [];
 
     const timePerBullet = 1.0 / fireRate;
 
-    while (currentHealth > 0) {
+    // Add iteration counter to prevent infinite loops
+    let iterations = 0;
+
+    while (currentHealth > 0 && iterations < MAX_ITERATIONS) {
+        iterations++;
+
         // Reload check
         if (bulletsInCurrentMag === 0) {
             timeElapsed += reloadTime;
@@ -199,6 +273,13 @@ export function calculateTTK(
                 bulletsRemaining: bulletsInCurrentMag
             });
         }
+    }
+
+    // Check if max iterations exceeded
+    if (iterations >= MAX_ITERATIONS) {
+        const error = new CalculationError(`TTK calculation exceeded max iterations (${MAX_ITERATIONS})`, gunName);
+        logger.error(error.message, { gunName, iterations });
+        return null;
     }
 
     const dps = (bulletsFired * damagePerBullet) / timeElapsed;

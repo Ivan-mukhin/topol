@@ -3,13 +3,14 @@ import type { TTKResult } from '../utils/calculator';
 
 interface DamageChartProps {
     result: TTKResult | null;
+    error?: string | null;
 }
 
-export const DamageChart: React.FC<DamageChartProps> = ({ result }) => {
+export const DamageChart: React.FC<DamageChartProps> = ({ result, error }) => {
     if (!result) {
         return (
             <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                Select a weapon to see stats
+                {error ? 'Calculation error. Please try again.' : 'Select a weapon to see stats'}
             </div>
         );
     }
