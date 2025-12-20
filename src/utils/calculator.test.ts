@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { calculateTTK, getGunStats } from './calculator';
 import type { ShieldType } from '../data/vectors';
 
