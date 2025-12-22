@@ -18,3 +18,5 @@ export const MAX_HEADSHOT_RATIO = 1;
 export const MIN_DAMAGE = 0.0001; // Minimum damage to prevent division by zero
 export const MIN_FIRE_RATE = 0.0001; // Minimum fire rate to prevent division by zero
 
+
+

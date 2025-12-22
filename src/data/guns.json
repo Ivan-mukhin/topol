@@ -80,13 +80,13 @@
             "rarity": "rare",
             "image": "renegade.png"
         },
-        "toro": {
+        "il_toro": {
             "damage": 67.5,
             "fire_rate": 0.694,
             "mag_size": 5,
             "reload_time": 2.0,
             "rarity": "uncommon",
-            "image": "toro.png"
+            "image": "il_toro.png"
         },
         "anvil": {
             "damage": 40,
@@ -130,7 +130,7 @@
         "venator": 2.5,
         "vulcano": 1.0,
         "renegade": 2.25,
-        "toro": 1.0,
+        "il_toro": 1.0,
         "anvil": 2.5,
         "ferro": 2.5
     },
@@ -270,7 +270,7 @@
                 "durability_bonus": 30
             }
         },
-        "toro": {
+        "il_toro": {
             "2": {
                 "fire_rate_increase": 0.175,
                 "mag_size_bonus": 1,
