@@ -5,6 +5,7 @@ import { LoadoutConfig } from './LoadoutConfig';
 
 describe('LoadoutConfig', () => {
     const defaultProps = {
+        selectedWeapon: 'bobcat',
         level: 1,
         setLevel: vi.fn(),
         shieldType: 'medium' as const,
@@ -109,6 +110,24 @@ describe('LoadoutConfig', () => {
         const slider = screen.getByLabelText('Headshot chance percentage');
         expect(slider).toHaveAttribute('aria-valuemin', '0');
         expect(slider).toHaveAttribute('aria-valuemax', '100');
+    });
+    
+    it('should disable levels 2-4 for legendary weapons', () => {
+        render(<LoadoutConfig {...defaultProps} selectedWeapon="equalizer" />);
+        
+        const levelButtons = screen.getAllByRole('button');
+        const level1Button = levelButtons.find(btn => btn.textContent?.includes('Lvl 1'));
+        const level2Button = levelButtons.find(btn => btn.textContent?.includes('Lvl 2'));
+        const level3Button = levelButtons.find(btn => btn.textContent?.includes('Lvl 3'));
+        const level4Button = levelButtons.find(btn => btn.textContent?.includes('Lvl 4'));
+        
+        expect(level1Button).not.toHaveAttribute('aria-disabled', 'true');
+        expect(level2Button).toHaveAttribute('aria-disabled', 'true');
+        expect(level3Button).toHaveAttribute('aria-disabled', 'true');
+        expect(level4Button).toHaveAttribute('aria-disabled', 'true');
+        
+        // Check for legendary message
+        expect(screen.getByText(/Legendary weapons are locked to Level 1/i)).toBeInTheDocument();
     });
 });
 

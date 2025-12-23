@@ -1,7 +1,11 @@
 import React from 'react';
 import type { ShieldType } from '../data/vectors';
+import gunsData from '../data/guns.json';
+
+const { GUNS } = gunsData;
 
 interface LoadoutConfigProps {
+    selectedWeapon: string;
     level: number;
     setLevel: (level: number) => void;
     shieldType: ShieldType;
@@ -11,6 +15,7 @@ interface LoadoutConfigProps {
 }
 
 export const LoadoutConfig: React.FC<LoadoutConfigProps> = ({
+    selectedWeapon,
     level,
     setLevel,
     shieldType,
@@ -18,25 +23,44 @@ export const LoadoutConfig: React.FC<LoadoutConfigProps> = ({
     headshotRatio,
     setHeadshotRatio,
 }) => {
+    // Check if selected weapon is legendary (cannot be upgraded)
+    const gunData = GUNS[selectedWeapon as keyof typeof GUNS];
+    const isLegendary = gunData?.rarity === 'legendary';
+
     return (
         <div className="flex flex-col gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Weapon Level</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Weapon Level
+                    {isLegendary && (
+                        <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 italic">
+                            (Legendary weapons are locked to Level 1)
+                        </span>
+                    )}
+                </label>
                 <div className="flex gap-2">
-                    {[1, 2, 3, 4].map((l) => (
-                        <button
-                            key={l}
-                            onClick={() => setLevel(l)}
-                            aria-label={`Select weapon level ${l}`}
-                            aria-pressed={level === l}
-                            className={`px-3 py-1 rounded-md text-sm font-medium ${level === l
-                                ? 'bg-indigo-600 text-white'
-                                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    {[1, 2, 3, 4].map((l) => {
+                        const isDisabled = isLegendary && l > 1;
+                        return (
+                            <button
+                                key={l}
+                                onClick={() => !isDisabled && setLevel(l)}
+                                disabled={isDisabled}
+                                aria-label={`Select weapon level ${l}${isDisabled ? ' (disabled for legendary weapons)' : ''}`}
+                                aria-pressed={level === l}
+                                aria-disabled={isDisabled}
+                                className={`px-3 py-1 rounded-md text-sm font-medium ${
+                                    isDisabled
+                                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700 cursor-not-allowed opacity-50'
+                                        : level === l
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
                                 }`}
-                        >
-                            Lvl {l}
-                        </button>
-                    ))}
+                            >
+                                Lvl {l}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 

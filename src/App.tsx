@@ -5,6 +5,9 @@ import { DamageChart } from './components/DamageChart';
 import { calculateTTK, type TTKResult } from './utils/calculator';
 import { WeaponLeaderboard } from './components/WeaponLeaderboard';
 import type { ShieldType } from './data/vectors';
+import gunsData from './data/guns.json';
+
+const { GUNS } = gunsData;
 
 function App() {
   const [selectedWeapon, setSelectedWeapon] = useState<string>('bobcat');
@@ -13,6 +16,14 @@ function App() {
   const [headshotRatio, setHeadshotRatio] = useState<number>(0.0);
   const [result, setResult] = useState<TTKResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset level to 1 when selecting a legendary weapon
+  useEffect(() => {
+    const gunData = GUNS[selectedWeapon as keyof typeof GUNS];
+    if (gunData?.rarity === 'legendary' && level > 1) {
+      setLevel(1);
+    }
+  }, [selectedWeapon, level, setLevel]);
 
   useEffect(() => {
     try {
@@ -63,6 +74,7 @@ function App() {
             <hr className="border-gray-200 dark:border-gray-800" />
 
             <LoadoutConfig
+              selectedWeapon={selectedWeapon}
               level={level}
               setLevel={setLevel}
               shieldType={shieldType}
