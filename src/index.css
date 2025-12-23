@@ -14,4 +14,39 @@
         -moz-appearance: textfield;
         appearance: textfield;
     }
+
+    /* Subtle pulsing animation for selected weapon highlight */
+    /* Uses muted indigo colors to match the site's gray-based aesthetic */
+    @keyframes subtle-pulse {
+        0%, 100% {
+            opacity: 1;
+            background-color: rgb(245 247 250); /* very subtle gray with hint of indigo */
+        }
+        50% {
+            opacity: 1;
+            background-color: rgb(238 242 255); /* indigo-50 - matches base highlight color */
+        }
+    }
+
+    @keyframes subtle-pulse-dark {
+        0%, 100% {
+            opacity: 1;
+            background-color: rgb(17 24 39 / 0.3); /* gray-900/30 - subtle base */
+        }
+        50% {
+            opacity: 1;
+            background-color: rgb(30 27 75 / 0.2); /* indigo-900/20 - matches base highlight */
+        }
+    }
+
+    .animate-subtle-pulse {
+        animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Dark mode variant using media query to match Tailwind's default behavior */
+    @media (prefers-color-scheme: dark) {
+        .animate-subtle-pulse {
+            animation: subtle-pulse-dark 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    }
 }

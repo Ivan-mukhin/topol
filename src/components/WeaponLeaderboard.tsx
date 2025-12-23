@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import gunsData from '../data/guns.json';
 import { calculateTTK } from '../utils/calculator';
 import type { ShieldType } from '../data/vectors';
@@ -10,6 +10,7 @@ interface WeaponLeaderboardProps {
     level: number;
     shieldType: ShieldType;
     headshotRatio: number;
+    selectedWeapon?: string;
 }
 
 type SortKey = 'name' | 'ttk' | 'dps' | 'bulletsFired';
@@ -28,10 +29,163 @@ const SortIcon = ({ columnKey, sortConfig }: { columnKey: SortKey; sortConfig: S
     return <span className="text-indigo-600 dark:text-indigo-400 ml-1">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
 };
 
+// WeaponRow component with pulsing animation and visibility detection
+interface WeaponRowProps {
+    row: {
+        name: string;
+        image: string;
+        rarity: string;
+        ttk: number;
+        dps: number;
+        bulletsFired: number;
+        reloads: number;
+    };
+    index: number;
+    rarityColors: Record<string, string>;
+    isSelected: boolean;
+}
+
+const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelected }) => {
+    const rowRef = useRef<HTMLTableRowElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [animationComplete, setAnimationComplete] = useState(false);
+    const animationTimeoutRef = useRef<number | null>(null);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const hasStartedAnimationRef = useRef(false);
+
+    // Animation duration matches CSS animation (3 seconds)
+    const ANIMATION_DURATION_MS = 3000;
+
+    useEffect(() => {
+        if (!isSelected) {
+            // Reset states when deselected
+            setIsVisible(false);
+            setAnimationComplete(false);
+            hasStartedAnimationRef.current = false;
+            if (animationTimeoutRef.current !== null) {
+                clearTimeout(animationTimeoutRef.current);
+                animationTimeoutRef.current = null;
+            }
+            return;
+        }
+
+        // Reset animation state when selection changes
+        setIsVisible(false);
+        setAnimationComplete(false);
+        hasStartedAnimationRef.current = false;
+        if (animationTimeoutRef.current !== null) {
+            clearTimeout(animationTimeoutRef.current);
+            animationTimeoutRef.current = null;
+        }
+
+        // Check if element is already visible
+        const checkInitialVisibility = () => {
+            if (rowRef.current) {
+                const rect = rowRef.current.getBoundingClientRect();
+                return rect.top < window.innerHeight && rect.bottom > 0;
+            }
+            return false;
+        };
+
+        // Function to start the animation
+        const startAnimation = () => {
+            if (hasStartedAnimationRef.current) return; // Prevent multiple starts
+            hasStartedAnimationRef.current = true;
+            setIsVisible(true);
+            // Start animation timer: run for exactly 3 seconds
+            animationTimeoutRef.current = window.setTimeout(() => {
+                setAnimationComplete(true);
+                setIsVisible(false); // Stop animation
+            }, ANIMATION_DURATION_MS);
+        };
+
+        // Set up Intersection Observer to detect when row becomes visible
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && !hasStartedAnimationRef.current) {
+                        startAnimation();
+                    }
+                });
+            },
+            {
+                threshold: 0.1, // Trigger when 10% of row is visible
+                rootMargin: '0px',
+            }
+        );
+
+        // Check initial visibility
+        if (checkInitialVisibility()) {
+            startAnimation();
+        } else if (rowRef.current) {
+            observerRef.current.observe(rowRef.current);
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+                observerRef.current = null;
+            }
+            if (animationTimeoutRef.current !== null) {
+                clearTimeout(animationTimeoutRef.current);
+                animationTimeoutRef.current = null;
+            }
+        };
+    }, [isSelected]); // Only depend on isSelected
+
+    const isPulsing = isSelected && isVisible && !animationComplete;
+    const isHighlighted = isSelected && animationComplete;
+
+    return (
+        <tr
+            ref={rowRef}
+            className={`transition-all duration-300 ${
+                isPulsing
+                    ? 'animate-subtle-pulse bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 dark:border-indigo-400'
+                    : isHighlighted
+                    ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-600 dark:border-indigo-400'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            }`}
+        >
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-mono">
+                {index + 1}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
+                <div className="flex items-center gap-3">
+                    <div className="w-16 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
+                        <img
+                            src={`/guns/${row.image}`}
+                            alt={`${row.name} weapon icon`}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                        />
+                    </div>
+                    <span className={rarityColors[row.rarity] || 'text-gray-900 dark:text-white'}>
+                        {row.name.replace(/_/g, ' ')}
+                    </span>
+                </div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
+                {row.ttk.toFixed(3)}s
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-emerald-600 dark:text-emerald-400">
+                {row.dps.toFixed(0)}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-orange-600 dark:text-orange-400">
+                {row.bulletsFired}
+                {row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} {row.reloads === 1 ? 'reload' : 'reloads'})</span>}
+            </td>
+        </tr>
+    );
+};
+
 export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
     level,
     shieldType,
     headshotRatio,
+    selectedWeapon,
 }) => {
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'ttk', direction: 'asc' });
     const [isCalculating, setIsCalculating] = useState(false);
@@ -170,39 +324,13 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                     </thead>
                     <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
                         {leaderboardData.map((row, index) => (
-                            <tr key={row.name} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-mono">
-                                    {index + 1}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
-                                    <div className="flex items-center gap-3">
-                                        {/* Use error handling for images to not break layout if missing */}
-                                        <div className="w-16 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
-                                            <img
-                                                src={`/guns/${row.image}`}
-                                                alt={`${row.name} weapon icon`}
-                                                className="w-full h-full object-contain"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).style.display = 'none';
-                                                }}
-                                            />
-                                        </div>
-                                        <span className={rarityColors[row.rarity] || 'text-gray-900 dark:text-white'}>
-                                            {row.name.replace(/_/g, ' ')}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
-                                    {row.ttk.toFixed(3)}s
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-emerald-600 dark:text-emerald-400">
-                                    {row.dps.toFixed(0)}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-orange-600 dark:text-orange-400">
-                                    {row.bulletsFired}
-                                    {row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} {row.reloads === 1 ? 'reload' : 'reloads'})</span>}
-                                </td>
-                            </tr>
+                            <WeaponRow
+                                key={row.name}
+                                row={row}
+                                index={index}
+                                rarityColors={rarityColors}
+                                isSelected={selectedWeapon === row.name}
+                            />
                         ))}
                     </tbody>
                 </table>

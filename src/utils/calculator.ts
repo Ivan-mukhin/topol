@@ -175,7 +175,7 @@ export function calculateTTK(
         // Catch validation errors and log them, then return null
         if (error instanceof ValidationError) {
             logger.warn(`Validation error: ${error.message}`, { field: error.field, gunName });
-            return null;
+        return null;
         }
         // Re-throw unexpected errors
         throw error;

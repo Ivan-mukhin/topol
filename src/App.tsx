@@ -103,6 +103,7 @@ function App() {
             level={level}
             shieldType={shieldType}
             headshotRatio={headshotRatio}
+            selectedWeapon={selectedWeapon}
           />
         </div>
       </div>
