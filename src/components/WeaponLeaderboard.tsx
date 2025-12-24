@@ -44,9 +44,10 @@ interface WeaponRowProps {
     index: number;
     rarityColors: Record<string, string>;
     isSelected: boolean;
+    refreshTrigger: string;
 }
 
-const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelected }) => {
+const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelected, refreshTrigger }) => {
     const rowRef = useRef<HTMLTableRowElement>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [animationComplete, setAnimationComplete] = useState(false);
@@ -135,7 +136,7 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
                 animationTimeoutRef.current = null;
             }
         };
-    }, [isSelected]); // Only depend on isSelected
+    }, [isSelected, refreshTrigger]); // Re-run animation when selection or leaderboard inputs change
 
     const isPulsing = isSelected && isVisible && !animationComplete;
     const isHighlighted = isSelected && animationComplete;
@@ -355,6 +356,7 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
                                 index={index}
                                 rarityColors={rarityColors}
                                 isSelected={selectedWeapon === row.name}
+                                refreshTrigger={`${level}-${shieldType}-${debouncedHeadshotRatio}`}
                             />
                         ))}
                     </tbody>
