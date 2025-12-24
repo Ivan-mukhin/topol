@@ -3,20 +3,21 @@ import type { TTKResult } from '../utils/calculator';
 
 interface DamageChartProps {
     result: TTKResult | null;
+    error?: string | null;
 }
 
-export const DamageChart: React.FC<DamageChartProps> = ({ result }) => {
+export const DamageChart: React.FC<DamageChartProps> = ({ result, error }) => {
     if (!result) {
         return (
             <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                Select a weapon to see stats
+                {error ? 'Calculation error. Please try again.' : 'Select a weapon to see stats'}
             </div>
         );
     }
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Performance Stats</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Performance Statistics</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
@@ -39,7 +40,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ result }) => {
                         {result.bulletsFired}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                        {result.reloads > 0 && `+${result.reloads} Reloads`}
+                        {result.reloads > 0 && `+${result.reloads} Reload${result.reloads === 1 ? '' : 's'}`}
                     </p>
                 </div>
             </div>

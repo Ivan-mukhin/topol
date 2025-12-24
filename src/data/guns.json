@@ -4,79 +4,153 @@
             "damage": 6,
             "fire_rate": 16.785,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 2,
+            "rarity": "epic",
+            "image": "bobcat.png"
         },
         "torrente": {
             "damage": 8,
             "fire_rate": 13.42,
             "mag_size": 60,
-            "reload_time": 2.0
+            "reload_time": 4.42,
+            "rarity": "rare",
+            "image": "torrente.png"
         },
         "stitcher": {
             "damage": 7,
             "fire_rate": 11.448,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 1.8,
+            "rarity": "common",
+            "image": "stitcher.png"
         },
         "tempest": {
             "damage": 10,
             "fire_rate": 9.315,
             "mag_size": 25,
-            "reload_time": 2.0
+            "reload_time": 2.25,
+            "rarity": "epic",
+            "image": "tempest.png"
         },
         "kettle": {
             "damage": 10,
             "fire_rate": 7.415,
             "mag_size": 20,
-            "reload_time": 3
+            "reload_time": 3,
+            "rarity": "common",
+            "image": "kettle.png"
         },
         "burletta": {
             "damage": 10,
             "fire_rate": 6.519,
             "mag_size": 12,
-            "reload_time": 2.0
+            "reload_time": 1.5,
+            "rarity": "uncommon",
+            "image": "burletta.png"
         },
         "bettina": {
             "damage": 14,
             "fire_rate": 4.8,
             "mag_size": 20,
-            "reload_time": 2.0
+            "reload_time": 3.8,
+            "rarity": "epic",
+            "image": "bettina.png"
         },
         "venator": {
             "damage": 18,
             "fire_rate": 3.169,
             "mag_size": 10,
-            "reload_time": 1.78
+            "reload_time": 1.78,
+            "rarity": "rare",
+            "image": "venator.png"
         },
         "vulcano": {
             "damage": 49.5,
             "fire_rate": 1.899,
             "mag_size": 6,
-            "reload_time": 2.0
+            "reload_time": 2.1,
+            "rarity": "epic",
+            "image": "vulcano.png"
         },
         "renegade": {
             "damage": 35,
             "fire_rate": 0.743,
             "mag_size": 8,
-            "reload_time": 4.56
+            "reload_time": 4.56,
+            "rarity": "rare",
+            "image": "renegade.png"
         },
-        "toro": {
+        "il_toro": {
             "damage": 67.5,
             "fire_rate": 0.694,
             "mag_size": 5,
-            "reload_time": 2.0
+            "reload_time": 3.33,
+            "rarity": "uncommon",
+            "image": "il_toro.png"
         },
         "anvil": {
             "damage": 40,
             "fire_rate": 0.65,
             "mag_size": 6,
-            "reload_time": 2.0
+            "reload_time": 5.03,
+            "rarity": "uncommon",
+            "image": "anvil.png"
+        },
+        "arpeggio": {
+            "damage": 9.5,
+            "fire_rate": 7.7,
+            "mag_size": 24,
+            "reload_time": 2,
+            "rarity": "uncommon",
+            "image": "arpeggio.png"
         },
         "ferro": {
             "damage": 40,
             "fire_rate": 0.341,
             "mag_size": 1,
-            "reload_time": 1.73
+            "reload_time": 1.73,
+            "rarity": "common",
+            "image": "ferro.png"
+        },
+        "equalizer": {
+            "damage": 8,
+            "fire_rate": 10,
+            "mag_size": 50,
+            "reload_time": 3,
+            "rarity": "legendary",
+            "image": "equalizer.png"
+        },
+        "hairpin": {
+            "damage": 20,
+            "fire_rate": 1,
+            "mag_size": 8,
+            "reload_time": 1.8,
+            "rarity": "common",
+            "image": "hairpin.png"
+        },
+        "jupiter": {
+            "damage": 55,
+            "fire_rate": 0.36,
+            "mag_size": 5,
+            "reload_time": 3,
+            "rarity": "legendary",
+            "image": "jupiter.png"
+        },
+        "osprey": {
+            "damage": 45,
+            "fire_rate": 0.7,
+            "mag_size": 8,
+            "reload_time": 2.56,
+            "rarity": "rare",
+            "image": "osprey.png"
+        },
+        "rattler": {
+            "damage": 9,
+            "fire_rate": 10,
+            "mag_size": 9,
+            "reload_time": 6.45,
+            "rarity": "common",
+            "image": "rattler.png"
         }
     },
     "SHIELDS": {
@@ -104,9 +178,15 @@
         "venator": 2.5,
         "vulcano": 1.0,
         "renegade": 2.25,
-        "toro": 1.0,
+        "il_toro": 1.0,
         "anvil": 2.5,
-        "ferro": 2.5
+        "arpeggio": 1.0,
+        "ferro": 2.5,
+        "equalizer": 1.0,
+        "hairpin": 1.0,
+        "jupiter": 1.0,
+        "osprey": 1.0,
+        "rattler": 1.0
     },
     "GUN_UPGRADES": {
         "kettle": {
@@ -244,7 +324,7 @@
                 "durability_bonus": 30
             }
         },
-        "toro": {
+        "il_toro": {
             "2": {
                 "fire_rate_increase": 0.175,
                 "mag_size_bonus": 1,
@@ -275,6 +355,40 @@
                 "durability_bonus": 30
             }
         },
+        "bettina": {
+            "2": {
+                "fire_rate_increase": 0.05,
+                "reload_reduction": 0.111,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.10,
+                "reload_reduction": 0.222,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.15,
+                "reload_reduction": 0.333,
+                "durability_bonus": 30
+            }
+        },
+        "arpeggio": {
+            "2": {
+                "fire_rate_increase": 0.20,
+                "reload_reduction": 0.125,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.40,
+                "reload_reduction": 0.25,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.60,
+                "reload_reduction": 0.50,
+                "durability_bonus": 30
+            }
+        },
         "ferro": {
             "2": {
                 "reload_reduction": 0.13,
@@ -286,6 +400,54 @@
             },
             "4": {
                 "reload_reduction": 0.39,
+                "durability_bonus": 30
+            }
+        },
+        "hairpin": {
+            "2": {
+                "fire_rate_increase": 0.10,
+                "reload_reduction": 0.13,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.20,
+                "reload_reduction": 0.26,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.30,
+                "reload_reduction": 0.40,
+                "durability_bonus": 30
+            }
+        },
+        "osprey": {
+            "2": {
+                "fire_rate_increase": 0.20,
+                "reload_reduction": 0.125,
+                "durability_bonus": 10
+            },
+            "3": {
+                "fire_rate_increase": 0.40,
+                "reload_reduction": 0.25,
+                "durability_bonus": 20
+            },
+            "4": {
+                "fire_rate_increase": 0.60,
+                "reload_reduction": 0.375,
+                "durability_bonus": 30
+            }
+        },
+        "rattler": {
+            "2": {
+                "mag_size_bonus": 4,
+                "durability_bonus": 10
+            },
+            "3": {
+                "mag_size_bonus": 8,
+                "durability_bonus": 20
+            },
+            "4": {
+                "mag_size_bonus": 12,
                 "durability_bonus": 30
             }
         }
