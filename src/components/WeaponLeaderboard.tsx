@@ -53,8 +53,8 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
     const observerRef = useRef<IntersectionObserver | null>(null);
     const hasStartedAnimationRef = useRef(false);
 
-    // Animation duration matches CSS animation (3 seconds)
-    const ANIMATION_DURATION_MS = 3000;
+    // Animation duration matches CSS animation (5 seconds)
+    const ANIMATION_DURATION_MS = 5000;
 
     useEffect(() => {
         if (!isSelected) {
@@ -92,10 +92,9 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
             if (hasStartedAnimationRef.current) return; // Prevent multiple starts
             hasStartedAnimationRef.current = true;
             setIsVisible(true);
-            // Start animation timer: run for exactly 3 seconds
+            // Start animation timer: run for exactly 5 seconds
             animationTimeoutRef.current = window.setTimeout(() => {
                 setAnimationComplete(true);
-                setIsVisible(false); // Stop animation
             }, ANIMATION_DURATION_MS);
         };
 
@@ -114,14 +113,18 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
             }
         );
 
-        // Check initial visibility
-        if (checkInitialVisibility()) {
-            startAnimation();
-        } else if (rowRef.current) {
-            observerRef.current.observe(rowRef.current);
-        }
+        // Use setTimeout to ensure React commits the reset state before starting animation
+        // requestAnimationFrame alone isn't enough as React may batch updates
+        const timeoutId = window.setTimeout(() => {
+            if (checkInitialVisibility()) {
+                startAnimation();
+            } else if (rowRef.current && observerRef.current) {
+                observerRef.current.observe(rowRef.current);
+            }
+        }, 50);
 
         return () => {
+            clearTimeout(timeoutId);
             if (observerRef.current) {
                 observerRef.current.disconnect();
                 observerRef.current = null;
@@ -139,11 +142,11 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
     return (
         <tr
             ref={rowRef}
-            className={`transition-all duration-300 ${
+            className={`${isSelected ? '' : 'transition-all duration-300'} ${
                 isPulsing
-                    ? 'animate-subtle-pulse bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 dark:border-indigo-400'
+                    ? 'animate-selected-row border-l-4 border-solid'
                     : isHighlighted
-                    ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-600 dark:border-indigo-400'
+                    ? 'animate-selected-row border-l-4 border-solid'
                     : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
         >
@@ -168,14 +171,20 @@ const WeaponRow: React.FC<WeaponRowProps> = ({ row, index, rarityColors, isSelec
                 </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
-                {row.ttk.toFixed(3)}s
+                {row.hasError || !isFinite(row.ttk) ? (
+                    <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-200">
+                        Error
+                    </span>
+                ) : (
+                    `${row.ttk.toFixed(3)}s`
+                )}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-emerald-600 dark:text-emerald-400">
-                {row.dps.toFixed(0)}
+                {row.hasError || !isFinite(row.dps) ? '—' : row.dps.toFixed(0)}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-orange-600 dark:text-orange-400">
-                {row.bulletsFired}
-                {row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} {row.reloads === 1 ? 'reload' : 'reloads'})</span>}
+                {row.hasError || !isFinite(row.bulletsFired) ? '—' : row.bulletsFired}
+                {!row.hasError && row.reloads > 0 && <span className="ml-1 text-xs text-gray-400">(+{row.reloads} {row.reloads === 1 ? 'reload' : 'reloads'})</span>}
             </td>
         </tr>
     );
@@ -223,24 +232,39 @@ export const WeaponLeaderboard: React.FC<WeaponLeaderboardProps> = ({
         
         const data = Object.keys(GUNS).map((gunName) => {
             // Use debounced headshot ratio
-            const result = calculateTTK(gunName, shieldType, level, debouncedHeadshotRatio);
-            const gunData = GUNS[gunName as keyof typeof GUNS];
-            
-            if (!result) {
-                // Log but don't break UI
-                logger.warn(`Failed to calculate TTK for ${gunName}`);
+            try {
+                const result = calculateTTK(gunName, shieldType, level, debouncedHeadshotRatio);
+                const gunData = GUNS[gunName as keyof typeof GUNS];
+                
+                if (!result) {
+                    // Log but don't break UI
+                    logger.warn(`Failed to calculate TTK for ${gunName}`);
+                }
+                
+                return {
+                    name: gunName,
+                    image: gunData.image,
+                    rarity: gunData.rarity as keyof typeof rarityColors,
+                    ttk: result?.ttk ?? FALLBACK_TTK,
+                    dps: result?.dps ?? FALLBACK_DPS,
+                    bulletsFired: result?.bulletsFired ?? FALLBACK_BULLETS,
+                    reloads: result?.reloads ?? 0,
+                    hasError: result === null,
+                };
+            } catch (error) {
+                logger.error(`Unexpected TTK error for ${gunName}`, error);
+                const gunData = GUNS[gunName as keyof typeof GUNS];
+                return {
+                    name: gunName,
+                    image: gunData.image,
+                    rarity: gunData.rarity as keyof typeof rarityColors,
+                    ttk: FALLBACK_TTK,
+                    dps: FALLBACK_DPS,
+                    bulletsFired: FALLBACK_BULLETS,
+                    reloads: 0,
+                    hasError: true,
+                };
             }
-            
-            return {
-                name: gunName,
-                image: gunData.image,
-                rarity: gunData.rarity as keyof typeof rarityColors,
-                ttk: result?.ttk ?? FALLBACK_TTK, // Use Infinity instead of 999 for better sorting
-                dps: result?.dps ?? FALLBACK_DPS,
-                bulletsFired: result?.bulletsFired ?? FALLBACK_BULLETS,
-                reloads: result?.reloads ?? 0,
-                hasError: result === null,
-            };
         });
 
         const sorted = data.sort((a, b) => {

@@ -75,6 +75,13 @@ describe('LoadoutConfig', () => {
         
         expect(setHeadshotRatio).toHaveBeenCalled();
     });
+
+    it('should display 0 in headshot percentage input by default', () => {
+        render(<LoadoutConfig {...defaultProps} headshotRatio={0} />);
+        
+        const numberInput = screen.getByLabelText('Headshot chance percentage input') as HTMLInputElement;
+        expect(numberInput.value).toBe('0');
+    });
     
     it('should show active state for selected level', () => {
         render(<LoadoutConfig {...defaultProps} level={2} />);

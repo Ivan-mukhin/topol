@@ -114,7 +114,7 @@ export const LoadoutConfig: React.FC<LoadoutConfigProps> = ({
                             max="100"
                             step="1"
                             placeholder="0"
-                            value={Math.round(headshotRatio * 100) || ''}
+                            value={`${Math.round(headshotRatio * 100)}`}
                             onChange={(e) => {
                                 const rawValue = e.target.value;
                                 if (rawValue === '') {

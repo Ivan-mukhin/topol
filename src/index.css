@@ -15,38 +15,90 @@
         appearance: textfield;
     }
 
-    /* Subtle pulsing animation for selected weapon highlight */
-    /* Uses muted indigo colors to match the site's gray-based aesthetic */
+    /* Pulsing animation for selected weapon highlight */
+    /* Light mode: Starts from base row (white), pulses toward a darker indigo tint, lands on the darker highlight */
     @keyframes subtle-pulse {
-        0%, 100% {
-            opacity: 1;
-            background-color: rgb(245 247 250); /* very subtle gray with hint of indigo */
+        0% {
+            background-color: #ffffff; /* base row */
         }
-        50% {
-            opacity: 1;
-            background-color: rgb(238 242 255); /* indigo-50 - matches base highlight color */
+        40% {
+            background-color: #c7d2fe; /* midpoint tint */
+        }
+        70% {
+            background-color: #e0e7ff; /* arrive at highlight early */
+        }
+        100% {
+            background-color: #e0e7ff; /* hold highlight */
         }
     }
 
+    /* Dark mode: Starts from deep base, pulses lighter indigo, lands on lighter highlight */
     @keyframes subtle-pulse-dark {
-        0%, 100% {
-            opacity: 1;
-            background-color: rgb(17 24 39 / 0.3); /* gray-900/30 - subtle base */
+        0% {
+            background-color: #0f172a; /* deep base */
+        }
+        40% {
+            background-color: #29346f; /* midpoint tint */
+        }
+        70% {
+            background-color: #1f2748; /* arrive at highlight early */
+        }
+        100% {
+            background-color: #1f2748; /* hold highlight */
+        }
+    }
+
+    /* Border pulse animation - Light mode */
+    @keyframes subtle-pulse-border {
+        0% {
+            border-left-color: #6366f1; /* pulse start */
+        }
+        25% {
+            border-left-color: #585de7;
         }
         50% {
-            opacity: 1;
-            background-color: rgb(30 27 75 / 0.2); /* indigo-900/20 - matches base highlight */
+            border-left-color: #4f46e5; /* target */
+        }
+        75% {
+            border-left-color: #555ce4;
+        }
+        100% {
+            border-left-color: #4f46e5; /* static highlight border */
         }
     }
 
-    .animate-subtle-pulse {
-        animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    /* Border pulse animation - Dark mode */
+    @keyframes subtle-pulse-border-dark {
+        0% {
+            border-left-color: #4f46e5; /* darker start for dark mode */
+        }
+        25% {
+            border-left-color: #6366f1;
+        }
+        50% {
+            border-left-color: #818cf8; /* lighter target */
+        }
+        75% {
+            border-left-color: #737cf4;
+        }
+        100% {
+            border-left-color: #818cf8; /* static highlight border */
+        }
     }
 
-    /* Dark mode variant using media query to match Tailwind's default behavior */
+    /* Combined animation for selected row: background + border together */
+    .animate-selected-row {
+        animation:
+            subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) forwards,
+            subtle-pulse-border 3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+    }
+
+    /* Dark mode variants using media query to match Tailwind's default behavior */
     @media (prefers-color-scheme: dark) {
-        .animate-subtle-pulse {
-            animation: subtle-pulse-dark 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        .animate-selected-row {
+            animation:
+                subtle-pulse-dark 3s cubic-bezier(0.4, 0, 0.6, 1) forwards,
+                subtle-pulse-border-dark 3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
         }
     }
 }
