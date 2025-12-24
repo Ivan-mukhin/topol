@@ -39,6 +39,7 @@ interface WeaponRowProps {
         dps: number;
         bulletsFired: number;
         reloads: number;
+        hasError: boolean;
     };
     index: number;
     rarityColors: Record<string, string>;
